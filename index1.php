@@ -58,6 +58,7 @@ if($con->connect_error)
 <div  align="left" id="sam2" style=" ba-moz-border-radius: 15px; -webkit-border-radius: 15px;">
 	
 	<div id="hidingone">
+<!-- start student insertion part-->
 		<div id="stdadd" >
 			<input type="button" align="left" value="Student Insertion" id="b1">
 		</div>
@@ -66,8 +67,8 @@ if($con->connect_error)
 		<div class="login">
     <a href="convert.php" > <h1>Student Details Insertion</h1> </a>
     <form method="post" action="" name="studentinsertion">
-      <p><input type="text" name="stno" value="" placeholder="Roll No"></p>
-      <p><input type="text" name="stname" value="" placeholder="Name"></p>
+      <p><input type="text" name="stno" value="" placeholder="Roll No" required></p>
+      <p><input type="text" name="stname" value="" placeholder="Name" required></p>
       <p> <select name="styear" style="width: 175px">
             <option value="0">Select Year</option>
             <option>1</option>
@@ -78,7 +79,7 @@ if($con->connect_error)
       </p> 
      <p> <select name="stbranch" style="width: 175px">
       <option value="0">Select Branch</option>
-        <?php
+        <!-- <?php
         $query= $con->query("SELECT upper(`ug`) FROM `branches`");
         while($res = $query->fetch_array())
         {
@@ -99,14 +100,13 @@ if($con->connect_error)
         <?php
           }
         }
-        ?>
+        ?> -->
     </select></p>     
       <p class="submit"><input type="submit" name="ssubmit" value="Submit"></p>
     </form>
-    
-    
-    <?php
-    
+
+<!-- student submision part-->
+    <!-- <?php
     if(isset($_POST['ssubmit']))
     {
      $roll=$_POST['stno'];
@@ -114,38 +114,29 @@ if($con->connect_error)
      $year=$_POST['styear'];
      $branch=$_POST['stbranch'];
      
-     if($roll=='' || $name=='' )
-     {}
-     else
-     {
-	$rem=$con->query("SELECT 'rollnum' FROM 'student' WHERE 'rollnum'='$roll'",$conn);
-	if(!$rem){
-		 $query=$con->query("INSERT INTO `student` VALUES('$roll','$name','$year','$branch')",$conn);
-        }
-	else{
-		$query=$con->query("UPDATE 'student' SET 'name'='$name','year'='$year','branch'='$branch' WHERE 'rollnum'='$roll'",$conn);}
-     #$query=$con->query("INSERT INTO `student` VALUES('$roll','$name','$year','$branch')",$conn);
-     if(!$query)
-     {
-      die("Error in adding Student".$con->connect_error);
-     }
-     else
-     {
-     ?>
-     
-     <script type="text/javascript">
-     
-     alert("Student added successfully");
-     </script>
-     <?php
-      } 
-     }
+	  $rem=$con->query("SELECT 'rollnum' FROM 'student' WHERE 'rollnum'='$roll'",$conn);
+	  if(!$rem){
+      		 $query=$con->query("INSERT INTO `student` VALUES('$roll','$name','$year','$branch')",$conn);
+              }
+	  else{
+      		$query=$con->query("UPDATE 'student' SET 'name'='$name','year'='$year','branch'='$branch' WHERE 'rollnum'='$roll'",$conn);}
+           #$query=$con->query("INSERT INTO `student` VALUES('$roll','$name','$year','$branch')",$conn);
+        if(!$query)
+          {
+            die("Error in adding Student".$con->connect_error);
+          }
+        else
+          {
+    ?>       
+           <script type="text/javascript">
+           
+           alert("Student added successfully");
+           </script>
+    <?php
+            } 
     }
-    ?>
-    
-    
-    
-    
+    ?> -->
+<!-- student excel file upload part-->
     <p>Upload File</p>
     <form method="post" action="upload_file.php" enctype="multipart/form-data">
       <p><input type="file" name="file" id="file">&nbsp;</p>     
@@ -158,20 +149,21 @@ if($con->connect_error)
 			</div>
 			</center>
 		<br>
+<!-- end student insertion part-->
 
-
+<!-- start faculty insertion part-->
 		<div id="facadd">
 			<input id="b1" type="button" align="left" value="Faculty Insertion">
 		</div>
-			
+	
 		<center><div id="facdetailspage">
 			
 			<div class="login">
     <h1>Faculty Details Insertion</h1>
     <form method="post" action="" name="facultyinsertion">
-      <p><input type="text" name="facno" value="" placeholder="Faculty No"></p>
-      <p><input type="text" name="facname" value="" placeholder="Faculty Name"></p>
-      <p><input type="text" name="facbranch" value="" placeholder="Branch"></p>     
+      <p><input type="text" name="facno" value="" placeholder="Faculty No" required></p>
+      <p><input type="text" name="facname" value="" placeholder="Faculty Name" required></p>
+      <p><input type="text" name="facbranch" value="" placeholder="Branch" required></p>     
       <p class="submit"><input type="submit" name="fsubmit" value="Submit"></p>
     </form>
     
@@ -185,11 +177,6 @@ if($con->connect_error)
      $branch=$_POST['facbranch'];
      
      
-      if($roll=='' || $name=='' || $branch=='')
-     {}
-     else
-     {
-
      $query=$con->query("INSERT INTO `staff` VALUES('$roll','$name','$branch')",$conn);
      if(!$query)
      {
@@ -198,19 +185,14 @@ if($con->connect_error)
      else
      {
      ?>
-     
      <script type="text/javascript">
-     
-     alert("Faculty added successfully");
+       alert("Faculty added successfully");
      </script>
      <?php
-       }
-     }
+      }
     }
     ?>
-    
 
-    
     <p>Upload File</p>
     <form method="post" action="upload_file1.php" enctype="multipart/form-data">
       <p><input type="file" name="file0" id="file0"></p>
