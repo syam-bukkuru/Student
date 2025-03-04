@@ -1,4 +1,3 @@
-<?php require_once __DIR__ . '/../../config/auth.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -14,50 +13,50 @@
         }
 
         .container {
-            max-width: 600px;
+            max-width: 800px;
             margin: auto;
             background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
         }
 
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
         label {
             font-weight: bold;
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
         }
 
         input[type=text],
         select {
             width: 100%;
-            padding: 8px;
+            padding: 12px;
             border: 1px solid #ccc;
-            border-radius: 4px;
+            border-radius: 6px;
             box-sizing: border-box;
         }
 
-        input[type=submit] {
+        button[type=submit] {
             background-color: #4CAF50;
             color: white;
-            padding: 10px 15px;
+            padding: 12px 20px;
             border: none;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
-            float: right;
+            margin-top: 10px;
         }
 
-        input[type=submit]:hover {
+        button[type=submit]:hover {
             background-color: #45a049;
         }
 
         .message {
-            margin-top: 15px;
-            font-size: 1.1em;
+            margin-top: 20px;
+            font-size: 1.2em;
             color: green;
             display: none;
         }
@@ -65,11 +64,46 @@
         .error-message {
             color: red;
         }
+
+        /* Navigation Bar Styles */
+        .nav-buttons {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .nav-buttons a {
+            text-decoration: none;
+            margin: 0 15px;
+            padding: 12px 25px;
+            background-color: #007bff;
+            color: white;
+            border-radius: 8px;
+            display: inline-block;
+        }
+
+        .nav-buttons a:hover {
+            background-color: #0056b3;
+        }
+
+        hr {
+            margin: 40px 0;
+        }
     </style>
 </head>
 
 <body>
     <div class="container">
+        <h1>Admin Dashboard</h1>
+        <div class="nav-buttons">
+            <!-- Navigation Buttons -->
+            <a href="insert_students.php">Student Insertion</a>
+            <a href="insert_faculty.php">Faculty Insertion</a>
+            <a href="batch_update.php">Batch Update</a>
+            <a href="delete_student.php">Student Deletion</a>
+            <a href="delete_faculty.php">Faculty Deletion</a>
+            <a href="view_students.php">View Students</a>
+        </div>
+
         <h2>Student Information Form</h2>
 
         <form action="../controller/student_insert.php" method="post">

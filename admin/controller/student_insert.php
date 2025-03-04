@@ -1,4 +1,3 @@
-<?php require_once __DIR__ . '/../../config/auth.php'; ?>
 <?php
 require_once __DIR__ . '/../../config/dbconn.php';
 

@@ -1,20 +1,10 @@
-<?php
-session_start();
-
-// Check if admin is logged in
-if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'admin') {
-    header("Location: login.php"); // Redirect to login page if not logged in as admin
-    exit();
-}
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Information Form</title>
+    <title>Delete Student</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -23,137 +13,150 @@ if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'admin') {
         }
 
         .container {
-            max-width: 600px;
+            max-width: 800px;
             margin: auto;
             background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
         }
 
-        .form-group {
-            margin-bottom: 15px;
+        h2,
+        h3 {
+            margin-bottom: 20px;
+            font-size: 1.6em;
+            color: #333;
         }
 
         label {
-            font-weight: bold;
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #555;
         }
 
         input[type=text],
         select {
             width: 100%;
-            padding: 8px;
+            padding: 12px;
+            margin-bottom: 20px;
             border: 1px solid #ccc;
-            border-radius: 4px;
+            border-radius: 6px;
             box-sizing: border-box;
         }
 
-        button {
-            background-color: #4CAF50;
+        button[type=submit] {
+            background-color: #007bff;
             color: white;
-            padding: 10px 15px;
+            padding: 12px 20px;
             border: none;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
-            margin-top: 10px;
-        }
-
-        button:hover {
-            background-color: #45a049;
-        }
-
-        .message {
-            margin-top: 15px;
             font-size: 1.1em;
-            color: green;
-            display: none;
         }
 
-        .error-message {
+        button[type=submit]:hover {
+            background-color: #0056b3;
+        }
+
+        .success {
+            color: green;
+        }
+
+        .error {
             color: red;
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .nav-buttons {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .nav-buttons a {
+            text-decoration: none;
+            margin: 0 15px;
+            padding: 12px 25px;
+            background-color: #007bff;
+            color: white;
+            border-radius: 8px;
+            display: inline-block;
+        }
+
+        .nav-buttons a:hover {
+            background-color: #0056b3;
+        }
+
+        hr {
+            margin: 40px 0;
         }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <h2>Student Information Form</h2>
+        <h1>Admin Dashboard</h1>
+        <div class="nav-buttons">
+            <!-- Navigation Buttons -->
+            <a href="insert_students.php">Student Insertion</a>
+            <a href="insert_faculty.php">Faculty Insertion</a>
+            <a href="batch_update.php">Batch Update</a>
+            <a href="delete_student.php">Student Deletion</a>
+            <a href="delete_faculty.php">Faculty Deletion</a>
+            <a href="view_students.php">View Students</a>
+        </div>
 
-        <form action="../controller/student_insert.php" method="post">
-            <h3>Manual Student Entry</h3>
+        <h2>Delete Student</h2>
 
-            <label for="roll">Roll Number:</label>
-            <input type="text" name="roll" required><br>
+        <!-- Display messages -->
+        <?php
+        if (isset($_GET['message'])) {
+            echo "<p class='success'>" . htmlspecialchars($_GET['message']) . "</p>";
+        }
+        if (isset($_GET['error'])) {
+            echo "<p class='error'>" . htmlspecialchars($_GET['error']) . "</p>";
+        }
+        ?>
 
-            <label for="name">Name:</label>
-            <input type="text" name="name" required><br>
-
-            <label for="year">Year:</label>
-            <select name="year" required>
-                <option value="1">1st Year</option>
-                <option value="2">2nd Year</option>
-                <option value="3">3rd Year</option>
-                <option value="4">4th Year</option>
-            </select><br>
-
-            <label for="branch">Branch:</label>
-            <select name="branch" required>
-                <option value="CSE">CSE</option>
-                <option value="EEE">EEE</option>
-                <option value="ECE">ECE</option>
-                <option value="CIVIL">CIVIL</option>
-                <option value="MECH">MECH</option>
-                <option value="IT">IT</option>
-                <option value="IOT">IOT</option>
-                <option value="AIDS">AIDS</option>
-                <option value="AIML">AIML</option>
-            </select><br>
-
-            <button type="submit" name="submit_manual">Submit Manually</button>
+        <!-- Form to delete by Roll Number -->
+        <form action="../controller/student_deletion.php" method="POST">
+            <h3>Delete by Roll Number</h3>
+            <label for="roll">Enter Roll Number:</label>
+            <input type="text" id="roll" name="roll" required>
+            <button type="submit" name="delete_roll"
+                onclick="return confirm('Are you sure you want to delete this student?');">Delete Student</button>
         </form>
 
         <hr>
 
-        <form action="../controller/student_insert.php" method="post" enctype="multipart/form-data">
-            <h3>Upload CSV File</h3>
-
-            <label for="csv_file">Select CSV File:</label>
-            <input type="file" name="csv_file" accept=".csv" required><br>
-
-            <button type="submit" name="submit_csv">Upload CSV</button>
+        <!-- Form to delete all students by Year -->
+        <form action="../controller/student_deletion.php" method="POST">
+            <h3>Delete by Year</h3>
+            <label for="year">Select Year:</label>
+            <select id="year" name="year" required>
+                <option value="" disabled selected>Select Year</option>
+                <option value="1">1st Year</option>
+                <option value="2">2nd Year</option>
+                <option value="3">3rd Year</option>
+                <option value="4">4th Year</option>
+            </select>
+            <button type="submit" name="delete_year"
+                onclick="return confirm('Are you sure you want to delete all students from this year?');">Delete
+                All</button>
         </form>
 
-        <!-- Message displayed after form submission -->
-        <div class="message" id="message">
-            <?php
-            if (isset($_GET['message'])) {
-                echo htmlspecialchars($_GET['message']);
-            }
-
-            if (isset($_GET['error'])) {
-                echo "<span class='error-message'>" . htmlspecialchars($_GET['error']) . "</span>";
-            }
-            ?>
-        </div>
+        <a href="students.php">Back to Student List</a>
     </div>
-
-    <script>
-        // Show message on page load
-        const messageDiv = document.getElementById('message');
-        if (messageDiv.innerHTML.trim() !== '') {
-            messageDiv.style.display = 'block';
-            // Fade out after 5 seconds
-            setTimeout(function () {
-                messageDiv.style.transition = 'opacity 1s';
-                messageDiv.style.opacity = '0';
-                setTimeout(function () {
-                    messageDiv.style.display = 'none';
-                }, 1000);
-            }, 5000);
-        }
-    </script>
 </body>
 
 </html>
