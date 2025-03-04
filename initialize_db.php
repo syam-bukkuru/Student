@@ -3,7 +3,7 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-//http://localhost/LIBRARY/initialize_db.php
+//http://localhost/STUDENT/initialize_db.php
 
 $servername = "localhost";
 $username = "root"; // Default XAMPP username
@@ -50,13 +50,14 @@ if (!file_exists($flag_file)) {
         ) ENGINE=InnoDB DEFAULT CHARSET=latin1",
 
         "CREATE TABLE IF NOT EXISTS main (
-            date DATE NOT NULL,
-            name VARCHAR(100) NOT NULL,
-            branch VARCHAR(20) NOT NULL,
-            year INT(5) NOT NULL,
-            rollnum VARCHAR(15) NOT NULL,
-            intime TIME NOT NULL,
-            outtime TIME NOT NULL
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        date DATE NOT NULL,
+        name VARCHAR(100) NOT NULL,
+        branch VARCHAR(20) NOT NULL,
+        year INT(5) NOT NULL,
+        rollnum VARCHAR(15) NOT NULL,
+        intime TIME NOT NULL,
+        outtime TIME NOT NULL
         ) ENGINE=InnoDB DEFAULT CHARSET=latin1",
 
         "CREATE TABLE IF NOT EXISTS staff (
@@ -86,8 +87,8 @@ if (!file_exists($flag_file)) {
 
     // Insert default users
     $default_users = [
-        ["admin", "ematerial@9", "adminpage"],
-        ["admin", "admin2", "viewpage"]
+        ["admin", "yes", "adminpage"],
+        ["admin", "no", "viewpage"]
     ];
 
     $stmt = $conn->prepare("INSERT INTO logins (username, password, page) VALUES (?, ?, ?)");
