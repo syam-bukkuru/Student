@@ -108,6 +108,12 @@
             <label for="number">Faculty Number:</label>
             <input type="text" id="number" name="number" required>
 
+            <label for="title">Title:</label>
+            <select name="title" required>
+                <option value="Sir">Sir</option>
+                <option value="Madam">Madam</option>
+            </select>
+
             <label for="name">Name:</label>
             <input type="text" id="name" name="name" required>
 

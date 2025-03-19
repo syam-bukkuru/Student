@@ -63,6 +63,8 @@
             <a href="delete_student.php">Student Deletion</a>
             <a href="delete_faculty.php">Faculty Deletion</a>
             <a href="view_students.php">View Students</a>
+            <a href="graph.php">Reports</a>
+            <a href="report/index.php">New Report</a>
         </div>
     </div>
 </body>

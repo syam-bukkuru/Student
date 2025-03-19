@@ -60,6 +60,11 @@
 
         <!-- Route to View (Does not require login) -->
         <a href="gate_register/today_stats.php">View Statistics</a>
+
+        <a href="lib/index.php">New Lib</a>
+
+        <a href="new_libb/index.php">Working On</a>
+        <!--<a href="libbb/index.php">New new Lib</a>-->
     </div>
 </body>
 

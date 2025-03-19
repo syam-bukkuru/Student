@@ -1,21 +1,25 @@
 <?php
-include("../config/dbconn.php"); // Ensure the correct database connection
+header("Content-Type: application/json"); // JSON Response
+include("../config/dbconn.php"); // Database Connection
 include("datetime.php");
 
+$response = [];
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $rollnum_or_number = trim(htmlspecialchars($_POST['rollnum_or_number']));
+
+    $number = isset($_POST['number']) ? trim(htmlspecialchars($_POST['number'])) : null;
     $current_time = date("H:i:s");
     $current_date = date("Y-m-d");
 
-    // Check if student
+    // Check if student exists
     $student_query = $conn->prepare("SELECT * FROM student WHERE rollnum = ?");
-    $student_query->bind_param("s", $rollnum_or_number);
+    $student_query->bind_param("s", $number);
     $student_query->execute();
     $student_result = $student_query->get_result();
 
-    // Check if staff
+    // Check if staff exists
     $staff_query = $conn->prepare("SELECT * FROM staff WHERE rollnum = ?");
-    $staff_query->bind_param("s", $rollnum_or_number);
+    $staff_query->bind_param("s", $number);
     $staff_query->execute();
     $staff_result = $staff_query->get_result();
 
@@ -26,9 +30,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $year = $row['year'];
         $table = "main";
 
-        // Check if there is an active entry
+        // Check for active entry
         $check_last_entry = $conn->prepare("SELECT id FROM $table WHERE rollnum = ? AND date = ? AND outtime = '00:00:00' ORDER BY id DESC LIMIT 1");
-        $check_last_entry->bind_param("ss", $rollnum_or_number, $current_date);
+        $check_last_entry->bind_param("ss", $number, $current_date);
         $check_last_entry->execute();
         $last_entry_result = $check_last_entry->get_result();
 
@@ -39,18 +43,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $update_outtime = $conn->prepare("UPDATE $table SET outtime = ? WHERE id = ?");
             $update_outtime->bind_param("si", $current_time, $last_entry_id);
             if ($update_outtime->execute()) {
-                echo "<p style='color: green; font-weight: bold;'>Visit again, $name!</p>";
+                $response["status"] = "success";
+                $response["message"] = "Visit again, $name!";
             } else {
-                echo "<p style='color: red; font-weight: bold;'>Error updating outtime: " . $update_outtime->error . "</p>";
+                $response["status"] = "error";
+                $response["message"] = "Error updating outtime." . $update_outtime->error;
             }
         } else {
             $insert_query = $conn->prepare("INSERT INTO $table (date, name, branch, year, rollnum, intime, outtime) VALUES (?, ?, ?, ?, ?, ?, '00:00:00')");
-            $insert_query->bind_param("sssiss", $current_date, $name, $branch, $year, $rollnum_or_number, $current_time);
+            $insert_query->bind_param("sssiss", $current_date, $name, $branch, $year, $number, $current_time);
 
             if ($insert_query->execute()) {
-                echo "<p style='color: blue; font-weight: bold;'>Welcome, $name!</p>";
+                $response["status"] = "success";
+                $response["message"] = "Welcome, $name!";
             } else {
-                echo "<p style='color: red; font-weight: bold;'>Error inserting entry: " . $insert_query->error . "</p>";
+                echo "Error inserting new entry.<br>";
+                $response["status"] = "error";
+                $response["message"] = "Error inserting entry." . $insert_query->error;
             }
         }
     } elseif ($staff_result->num_rows > 0) {
@@ -60,9 +69,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $title = $row['title'];
         $table = "staff_logs";
 
-        // Check if there is an active entry
+        // Check for active entry
         $check_last_entry = $conn->prepare("SELECT id FROM $table WHERE rollnum = ? AND date = ? AND outtime = '00:00:00' ORDER BY id DESC LIMIT 1");
-        $check_last_entry->bind_param("ss", $rollnum_or_number, $current_date);
+        $check_last_entry->bind_param("ss", $number, $current_date);
         $check_last_entry->execute();
         $last_entry_result = $check_last_entry->get_result();
 
@@ -73,42 +82,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $update_outtime = $conn->prepare("UPDATE $table SET outtime = ? WHERE id = ?");
             $update_outtime->bind_param("si", $current_time, $last_entry_id);
             if ($update_outtime->execute()) {
-                echo "<p style='color: green; font-weight: bold;'>Visit again, $name $title!</p>";
+                $response["status"] = "success";
+                $response["message"] = "Visit again, $name $title!";
             } else {
-                echo "<p style='color: red; font-weight: bold;'>Error updating outtime: " . $update_outtime->error . "</p>";
+                $response["status"] = "error";
+                $response["message"] = "Error updating outtime." . $update_outtime->error;
             }
         } else {
             $insert_query = $conn->prepare("INSERT INTO $table (date, name, branch, rollnum, intime, outtime) VALUES (?, ?, ?, ?, ?, '00:00:00')");
-            $insert_query->bind_param("sssss", $current_date, $name, $branch, $rollnum_or_number, $current_time);
+            $insert_query->bind_param("sssss", $current_date, $name, $branch, $number, $current_time);
 
             if ($insert_query->execute()) {
-                echo "<p style='color: blue; font-weight: bold;'>Welcome, $name $title!</p>";
+                $response["status"] = "success";
+                $response["message"] = "Welcome, $name $title!";
             } else {
-                echo "<p style='color: red; font-weight: bold;'>Error inserting entry: " . $insert_query->error . "</p>";
+                $response["status"] = "error";
+                $response["message"] = "Error inserting entry." . $insert_query->error;
             }
         }
     } else {
-        echo "<p style='color: red; font-weight: bold;'>ID not found in records.</p>";
+        $response["status"] = "error";
+        $response["message"] = "ID not found in records.";
     }
 }
+
+echo json_encode($response);
 ?>
-
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Library Attendance System</title>
-</head>
-
-<body>
-    <h2>Scan ID Card:</h2>
-    <form method="POST" action="" id="attendanceForm">
-        <input type="text" name="rollnum_or_number" id="rollnum_or_number" required autofocus
-            placeholder="Scan barcode or type manually">
-        <button type="submit">Submit</button>
-    </form>
-</body>
-
-</html>
