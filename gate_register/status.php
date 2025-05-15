@@ -1,4 +1,4 @@
-﻿<?php 
+<?php 
 include("include/dbconn.php");
 ?>
 
@@ -30,7 +30,7 @@ include("include/dbconn.php");
     <div class="container">
       <div class="login">
         <div class="form-container">
-            <h1>Day Wise Details</h1>
+            <h1>Stats.</h1>
             <form method="post" class="yo">
                 <div class="part">
                 <label>From:</label>
@@ -81,21 +81,19 @@ include("include/dbconn.php");
                     <tr>
                         <th>Sno</th>
                         <th>Date</th>
-                        <th>Roll No</th>
-                        <th>Name</th>
                         <th>Branch</th>
+                        <th>Count</th>
                         <th>Year</th>
-                        <th>In Time</th>
-                        <th>Out Time</th>
                     </tr> </thead><tbody>";
             
-            $query = "SELECT * FROM main WHERE date BETWEEN '$fromdate' AND '$todate'";
+            $query = "SELECT date,count(branch) as co,branch,year FROM main WHERE date BETWEEN '$fromdate' AND '$todate' ";
             if ($branch !== '0') {
                 $query .= " AND branch LIKE '$branch%'";
             }
             if ($year !== '0') {
                 $query .= " AND year = '$year'";
             }
+            $query .= "group by branch,year ORDER BY date ASC";
 
             $result = $conn->query($query);
             $sno = 1;
@@ -103,12 +101,9 @@ include("include/dbconn.php");
                 echo "<tr>
                         <td>{$sno}</td>
                         <td>{$res['date']}</td>
-                        <td>{$res['rollnum']}</td>
-                        <td>{$res['name']}</td>
                         <td>" . strtoupper($res['branch']) . "</td>
+                        <td>{$res['co']}</td>
                         <td>{$res['year']}</td>
-                        <td>{$res['intime']}</td>
-                        <td>" . ($res['outtime'] != "00:00:00" ? $res['outtime'] : "Still in Library") . "</td>
                     </tr>";
                 $sno++;
             }
